@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Environment Variables & Secrets
+.env
+.env.*
+backend/.env
+frontend/.env
+*.env
+
+# Production Build outputs
+frontend/dist/
+frontend/dist-ssr/
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Scratch & media scripts
+extracted_media/
+*.pyc
+__pycache__/
+*.py
