@@ -9,6 +9,8 @@ import userRoute from "./routes/user.route.js";
 import companyRoute from "./routes/company.route.js";
 import jobRoute from "./routes/job.route.js";
 import applicationRoute from "./routes/application.route.js";
+import path from "path";
+import fs from "fs";
 
 // Ensure Atlas SRV records resolve smoothly on Windows
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
@@ -48,7 +50,30 @@ app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 
+// Serve frontend static assets for Single Page Application (SPA)
+const __dirname = path.resolve();
+const possibleDistPaths = [
+    path.join(__dirname, "../frontend/dist"),
+    path.join(__dirname, "frontend/dist"),
+    path.join(__dirname, "../dist"),
+    path.join(__dirname, "dist"),
+];
+const frontendDist = possibleDistPaths.find(p => fs.existsSync(p));
 
+if (frontendDist) {
+    console.log(`Serving frontend static files from: ${frontendDist}`);
+    app.use(express.static(frontendDist));
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(frontendDist, "index.html"));
+    });
+} else {
+    app.get("/", (req, res) => {
+        res.status(200).json({
+            message: "Job Portal Backend API is running. (Frontend dist not built)",
+            status: "UP"
+        });
+    });
+}
 
 app.listen(PORT,()=>{
     connectDB();

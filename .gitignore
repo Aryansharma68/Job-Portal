@@ -11,9 +11,9 @@ frontend/.env
 *.env
 
 # Production Build outputs
-frontend/dist/
+# frontend/dist/
 frontend/dist-ssr/
-dist/
+# dist/
 
 # Logs
 *.log
