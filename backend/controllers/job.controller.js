@@ -19,8 +19,8 @@ export const postJob = async (req, res) => {
             salary: Number(salary),
             location,
             jobType,
-            experienceLevel: experience,
-            position,
+            experienceLevel: Number(experience),
+            position: Number(position),
             company: companyId,
             created_by: userId
         });
@@ -31,6 +31,10 @@ export const postJob = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: error.message || "Failed to create job",
+            success: false
+        });
     }
 }
 // student k liye

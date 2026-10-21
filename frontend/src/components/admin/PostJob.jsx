@@ -10,10 +10,10 @@ import { JOB_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
-
-const companyArray = [];
+import useGetAllCompanies from '@/hooks/useGetAllCompanies'
 
 const PostJob = () => {
+    useGetAllCompanies();
     const [input, setInput] = useState({
         title: "",
         description: "",
@@ -34,12 +34,19 @@ const PostJob = () => {
     };
 
     const selectChangeHandler = (value) => {
-        const selectedCompany = companies.find((company)=> company.name.toLowerCase() === value);
-        setInput({...input, companyId:selectedCompany._id});
+        setInput({...input, companyId: value});
     };
 
     const submitHandler = async (e) => {
         e.preventDefault();
+        if (!input.companyId) {
+            toast.error("Please select a company");
+            return;
+        }
+        if (isNaN(Number(input.salary)) || Number(input.salary) <= 0) {
+            toast.error("Salary must be a valid number (e.g., 600000 or 50000)");
+            return;
+        }
         try {
             setLoading(true);
             const res = await axios.post(`${JOB_API_END_POINT}/post`, input,{
@@ -53,7 +60,7 @@ const PostJob = () => {
                 navigate("/admin/jobs");
             }
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error?.response?.data?.message || "Failed to post job");
         } finally{
             setLoading(false);
         }
@@ -156,7 +163,7 @@ const PostJob = () => {
                                             {
                                                 companies.map((company) => {
                                                     return (
-                                                        <SelectItem value={company?.name?.toLowerCase()}>{company.name}</SelectItem>
+                                                        <SelectItem key={company._id} value={company._id}>{company.name}</SelectItem>
                                                     )
                                                 })
                                             }
